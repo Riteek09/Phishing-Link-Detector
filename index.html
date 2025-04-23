@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Phishing Link Detector</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .safe {
+      color: green;
+      font-weight: bold;
+    }
+    .phishing {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🔗 Phishing Link Detector</h2>
+  <input type="text" id="urlInput" placeholder="Enter URL (e.g. http://example.com)">
+  <button onclick="checkPhishing()">Check URL</button>
+  <p id="result"></p>
+</div>
+
+<script>
+  function checkPhishing() {
+    const url = document.getElementById("urlInput").value.trim();
+    const result = document.getElementById("result");
+
+    if (!url) {
+      result.textContent = "Please enter a URL.";
+      result.className = "phishing";
+      return;
+    }
+
+    // Simple heuristics
+    const suspiciousKeywords = ["login", "secure", "update", "free", "confirm", "account"];
+    const hasIp = /^https?:\/\/(?:\d{1,3}\.){3}\d{1,3}/.test(url);
+    const hasAt = url.includes("@");
+    const isLong = url.length > 75;
+    const hasKeyword = suspiciousKeywords.some(keyword => url.toLowerCase().includes(keyword));
+
+    let score = 0;
+    if (hasIp) score++;
+    if (hasAt) score++;
+    if (isLong) score++;
+    if (hasKeyword) score++;
+
+    if (score >= 2) {
+      result.textContent = "⚠️ This link is PHISHING!";
+      result.className = "phishing";
+    } else {
+      result.textContent = "✅ This link is SAFE.";
+      result.className = "safe";
+    }
+  }
+</script>
+
+</body>
+</html>
